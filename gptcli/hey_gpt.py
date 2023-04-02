@@ -66,7 +66,7 @@ def apply_changes(input_string):
         if line.startswith("BEGIN_FILE"):
             absolute_path = os.path.abspath(line.split(" ", 1)[1])
             relative_path = os.path.relpath(absolute_path, current_directory)
-            if not relative_paths.startswith('.'):
+            if not relative_path.startswith('.'):
                 current_file = relative_path
                 file_contents[current_file] = []
         elif line.startswith("END_FILE"):

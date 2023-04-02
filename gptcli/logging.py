@@ -21,7 +21,7 @@ class CustomFormatter(logging.Formatter):
 
 def setup():
     root_logger = logging.getLogger()
-    root_logger.setLevel(logging.DEBUG)
+    root_logger.setLevel(logging.INFO)
 
     # Remove existing handlers, if any
     for handler in root_logger.handlers[:]:

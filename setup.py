@@ -17,7 +17,6 @@ setup(
         "gptcli": ["prompt_prefix.txt"],
     },
     python_requires=">=3.6",
-    install_requires=[
     entry_points={
         "console_scripts": [
             "hey_gpt=gptcli.hey_gpt:main",
