@@ -97,6 +97,12 @@ def main():
     else:
         prompt = sys.stdin.read().strip()
 
+    if not args.no_prompt_prefix:
+        script_dir = os.path.dirname(os.path.realpath(__file__))
+        with open(os.path.join(script_dir, 'prompt_prefix.txt'), 'r') as f:
+            prompt_prefix = f.read().strip()
+        prompt = prompt_prefix + prompt
+
     if not prompt:
         return
 

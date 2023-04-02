@@ -13,6 +13,9 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/yourusername/gptcli",
     packages=find_packages(),
+    package_data={
+        "gptcli": ["prompt_prefix.txt"],
+    },
     python_requires=">=3.6",
     install_requires=[
     entry_points={
