@@ -1,6 +1,7 @@
 import argparse
 import difflib
 import json
+import logging
 import os
 import pathlib
 import re
@@ -9,6 +10,8 @@ import sys
 import tempfile
 
 import requests
+
+import gptcli.logging
 
 def create_table(conn):
     cursor = conn.cursor()
@@ -75,6 +78,7 @@ def apply_changes(input_string):
                 file_contents[current_file].append(line)
 
     for filename, content_lines in file_contents.items():
+        logging.info('Creating %s', filename)
         with open(filename, "w") as f:
             f.write("\n".join(content_lines))
 
@@ -85,6 +89,8 @@ def apply_diff(file_contents, diff_lines):
     file_contents[filename] = diff
 
 def main():
+    gptcli.logging.setup()
+
     parser = argparse.ArgumentParser(description='Interact with OpenAI API using different models and temperature settings.')
     parser.add_argument('prompt', nargs='*', help='The prompt for the model.')
     parser.add_argument('--no-prompt-prefix', action='store_true', help='Don\'t add the prompt prefix')
