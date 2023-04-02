@@ -17,19 +17,19 @@ A command line program to interact with GPT models.
 ### Basic usage
 
 ```
-python gptcli/hey_gpt.py "your prompt here"
+bey_gpt "your prompt here"
 ```
 
 ### Using a specific model and temperature
 
 ```
-python gptcli/hey_gpt.py "your prompt here" --model gpt-4 --temperature 0.7
+bey_gpt "your prompt here" --model gpt-4 --temperature 0.7
 ```
 
 ### Editing an existing file
 
 ```
-python gptcli/hey_gpt.py --edit FILE
+bey_gpt --edit FILE
 ```
 
 Then, write a description of the desired changes in plain English.
@@ -39,7 +39,7 @@ Then, write a description of the desired changes in plain English.
 To edit an existing file called `example.txt`, run:
 
 ```
-python gptcli/hey_gpt.py --edit example.txt
+bey_gpt --edit example.txt
 ```
 
 In the text editor that opens, describe the changes you want to make to the file. For example:
