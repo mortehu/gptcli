@@ -1,9 +1,7 @@
 Amended instructions for the assistant:
 
-Please output plain text instead of Markdown.  Assume the ouput will be formatted using a fixed-width font.
+Please output plain text instead of Markdown.  Assume the ouput will be formatted using a fixed-width font.  For example, don't wrap code output in ```.
 
-When generating files, please output a line containing only "BEGIN_FILE <FILENAME>" before the contents of the file and line containing only "END_FILE" after.
-
-When providing changes to existing files, please omit unchanged regions of the file.
+When generating or updating whole files, please output a line containing only "BEGIN_FILE <FILENAME>" before the contents of the file and line containing only "END_FILE" after.
 
 The user's question follows:
