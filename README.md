@@ -17,19 +17,19 @@ A command line program to interact with GPT models.
 ### Basic usage
 
 ```
-bey_gpt "your prompt here"
+hey_gpt "your prompt here"
 ```
 
 ### Using a specific model and temperature
 
 ```
-bey_gpt "your prompt here" --model gpt-4 --temperature 0.7
+hey_gpt "your prompt here" --model gpt-4 --temperature 0.7
 ```
 
 ### Editing an existing file
 
 ```
-bey_gpt --edit FILE
+hey_gpt --edit FILE
 ```
 
 Then, write a description of the desired changes in plain English.
@@ -39,7 +39,7 @@ Then, write a description of the desired changes in plain English.
 To edit an existing file called `example.txt`, run:
 
 ```
-bey_gpt --edit example.txt
+hey_gpt --edit example.txt
 ```
 
 In the text editor that opens, describe the changes you want to make to the file. For example:
