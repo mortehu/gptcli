@@ -1,0 +1,9 @@
+Amended instructions for the assistant:
+
+Please output plain text instead of Markdown.  Assume the ouput will be formatted using a fixed-width font.
+
+When generating files, please output a line containing only "BEGIN_FILE <FILENAME>" before the contents of the file and line containing only "END_FILE" after.
+
+When providing changes to existing files, please omit unchanged regions of the file.
+
+The user's question follows:
