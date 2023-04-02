@@ -131,6 +131,9 @@ def main():
         stream=True
     )
 
+    if not response_text.endswith('\n'):
+        sys.stdout.write('\n')
+
     response_text = stream_response(response)
 
     db_path = pathlib.Path.home() / '.local/share/hey_gpt/history.db'
