@@ -1,5 +1,4 @@
 import argparse
-import difflib
 import json
 import logging
 import os
@@ -12,6 +11,7 @@ import tempfile
 
 import requests
 
+import gptcli.apply
 import gptcli.logging
 
 def create_table(conn):
@@ -54,46 +54,6 @@ def stream_response(response):
             sys.stdout.flush()
             content += content_chunk
     return content
-
-def yes_no_prompt(question):
-    while True:
-        user_input = input(f"{question} (y/n): ").lower()
-        if user_input == 'y':
-            return True
-        elif user_input == 'n':
-            return False
-        else:
-            print("Please enter 'y' or 'n'.", file=sys.stderr)
-
-def apply_changes(input_string):
-    file_contents = {}
-    current_file = None
-    current_directory = os.getcwd()
-
-    lines = input_string.split("\n")
-    for line in lines:
-        if line.startswith("BEGIN_FILE"):
-            absolute_path = os.path.abspath(line.split(" ", 1)[1])
-            relative_path = os.path.relpath(absolute_path, current_directory)
-            if not relative_path.startswith('.') or yes_no_prompt(f'Write {relative_path}?'):
-                current_file = relative_path
-                file_contents[current_file] = []
-        elif line.startswith("END_FILE"):
-            current_file = None
-        else:
-            if current_file in file_contents:
-                file_contents[current_file].append(line)
-
-    for filename, content_lines in file_contents.items():
-        logging.info('Creating %s', filename)
-        with open(filename, "w") as f:
-            f.write("\n".join(content_lines))
-
-def apply_diff(file_contents, diff_lines):
-    unified_diff = "\n".join(diff_lines)
-    diff = list(difflib.unified_diff_to_file(file_contents, unified_diff))
-    filename = re.search(r'--- (.+)', unified_diff).group(1)
-    file_contents[filename] = diff
 
 def get_editor():
     return os.environ.get("EDITOR", "vi")
@@ -180,7 +140,7 @@ def main():
     insert_history(conn, prompt, response_text)
     conn.close()
 
-    apply_changes(response_text)
+    gptcli.apply.apply_changes(response_text)
 
 if __name__ == "__main__":
     main()
