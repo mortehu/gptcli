@@ -96,12 +96,18 @@ def main():
     parser.add_argument('--no-prompt-prefix', action='store_true', help='Don\'t add the prompt prefix')
     parser.add_argument('--model', default='gpt-4', help='The model to use. (default: gpt-4)')
     parser.add_argument('--temperature', type=float, default=0.7, help='The temperature setting for the model. (default: 0.7)')
+    parser.add_argument('--edit', metavar='FILENAME', help='Edit a file with the given filename.')
     args = parser.parse_args()
 
     if args.prompt:
         prompt = ' '.join(args.prompt)
     else:
         prompt = sys.stdin.read().strip()
+
+    if args.edit:
+        with open(args.edit, 'r') as f:
+            file_contents = f.read()
+        prompt = f"BEGIN_FILE {args.edit}\n{file_contents}\nEND_FILE\nI wish to change the above file, {args.edit}, as described here:\n{prompt}"
 
     if not args.no_prompt_prefix:
         script_dir = os.path.dirname(os.path.realpath(__file__))
