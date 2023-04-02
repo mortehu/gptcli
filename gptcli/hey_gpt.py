@@ -6,6 +6,7 @@ import os
 import pathlib
 import re
 import sqlite3
+import subprocess
 import sys
 import tempfile
 
@@ -67,8 +68,6 @@ def yes_no_prompt(question):
 def apply_changes(input_string):
     file_contents = {}
     current_file = None
-    diff = False
-
     current_directory = os.getcwd()
 
     lines = input_string.split("\n")
@@ -82,9 +81,7 @@ def apply_changes(input_string):
         elif line.startswith("END_FILE"):
             current_file = None
         else:
-            if diff:
-                diff_lines.append(line)
-            elif current_file in file_contents:
+            if current_file in file_contents:
                 file_contents[current_file].append(line)
 
     for filename, content_lines in file_contents.items():
@@ -97,6 +94,19 @@ def apply_diff(file_contents, diff_lines):
     diff = list(difflib.unified_diff_to_file(file_contents, unified_diff))
     filename = re.search(r'--- (.+)', unified_diff).group(1)
     file_contents[filename] = diff
+
+def get_editor():
+    return os.environ.get("EDITOR", "vi")
+
+def get_prompt_from_editor():
+    with tempfile.NamedTemporaryFile(mode="w+t", suffix=".txt", delete=False) as temp_file:
+        temp_file.close()
+        try:
+            subprocess.run([get_editor(), temp_file.name], check=True)
+            with open(temp_file.name, "r") as f:
+                return f.read().strip()
+        finally:
+            os.unlink(temp_file.name)
 
 def main():
     gptcli.logging.setup()
@@ -111,6 +121,11 @@ def main():
 
     if args.prompt:
         prompt = ' '.join(args.prompt)
+    elif sys.stdin.isatty():
+        prompt = get_prompt_from_editor()
+        if not prompt:
+            print("Error: Empty prompt", file=sys.stderr)
+            sys.exit(1)
     else:
         prompt = sys.stdin.read().strip()
 
