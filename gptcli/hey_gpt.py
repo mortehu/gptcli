@@ -54,6 +54,16 @@ def stream_response(response):
             content += content_chunk
     return content
 
+def yes_no_prompt(question):
+    while True:
+        user_input = input(f"{question} (y/n): ").lower()
+        if user_input == 'y':
+            return True
+        elif user_input == 'n':
+            return False
+        else:
+            print("Please enter 'y' or 'n'.", file=sys.stderr)
+
 def apply_changes(input_string):
     file_contents = {}
     current_file = None
@@ -66,7 +76,7 @@ def apply_changes(input_string):
         if line.startswith("BEGIN_FILE"):
             absolute_path = os.path.abspath(line.split(" ", 1)[1])
             relative_path = os.path.relpath(absolute_path, current_directory)
-            if not relative_path.startswith('.'):
+            if not relative_path.startswith('.') or yes_no_prompt(f'Write {relative_path}?'):
                 current_file = relative_path
                 file_contents[current_file] = []
         elif line.startswith("END_FILE"):
