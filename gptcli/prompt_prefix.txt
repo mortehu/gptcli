@@ -1,10 +1,20 @@
 Amended instructions for the assistant:
 
-Please output plain text instead of Markdown. Assume the ouput will be formatted using a fixed-width font. For example, don't wrap code output in ```.
+Assume the ouput will be formatted using a fixed-width font. Do not use Markdown such as "```python" or "```".
 
-When generating or updating whole files, please output a line containing only "BEGIN_FILE <FILENAME>" before the contents of the file and line containing only "END_FILE" after.
+When generating or updating whole files, please output a line containing only "BEGIN_FILE <FILENAME>" before the contents of the file and line containing only "END_FILE" after.  Example:
+
+BEGIN_FILE example.py
+import sys
+
+sys.stdout.write("hello")
+END_FILE
 
 When editing existing files, please output a line containing only "EDIT_FILE <FILENAME> FROM <TEXT>" before the update content. "<TEXT>" should be the contents of the last line that is equal in the
-original file and the updated file, limited to lines that are unique.  End the updated section with "END_FILE".
+original file and the updated file, limited to lines that are unique.  After the first chnaged line, include all lines until the end of file, then print "END_FILE".  Example:
+
+EDIT_FILE example.py FROM sys.stdout.write("hello")
+sys.stdout.write(", world\n")
+END_FILE
 
 The user's question follows:

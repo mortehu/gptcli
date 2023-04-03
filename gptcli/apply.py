@@ -34,15 +34,33 @@ def apply_changes(input_string):
             if not relative_path.startswith('.') or yes_no_prompt(f'Edit {relative_path}?'):
                 current_file = relative_path
                 with open(current_file, "r") as f:
-                    original_lines = f.read.split('\n')
+                    original_lines = f.read().split('\n')
+
+                if from_text not in original_lines and from_text.startswith('"') and from_text.endswith('"'):
+                    from_text = from_text[1:-1]
 
                 new_lines = []
-                for original_line in original_lines:
-                    if original_line.strip() == from_text and not past_common_lines:
+                while original_lines:
+                    original_line = original_lines.pop(0)
+                    if original_line.strip() == from_text:
                         break
                     new_lines.append(original_line)
 
                 file_contents[current_file] = new_lines
+        elif line.startswith("END_FROM"):
+            parts = line.split(" ", 1)
+            from_text = parts[1]
+
+            if from_text not in original_lines and from_text.startswith('"') and from_text.endswith('"'):
+                from_text = from_text[1:-1]
+
+            while original_lines:
+                if original_lines == from_text:
+                    break
+                original_lines.pop(0)
+
+            file_contentsd[current_file].extend(original_lines)
+            current_file = None
         elif current_file in file_contents:
             file_contents[current_file].append(line)
 
