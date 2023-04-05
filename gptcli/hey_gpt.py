@@ -56,7 +56,7 @@ def main():
 
     parser = argparse.ArgumentParser(description='Interact with OpenAI API using different models and temperature settings.')
     parser.add_argument('prompt', nargs='*', help='The prompt for the model.')
-    parser.add_argument('--no-prompt-prefix', action='store_true', help='Don\'t add the prompt prefix')
+    parser.add_argument('--no-system-prompt', action='store_true', help='Don\'t add the system prompt')
     parser.add_argument('--model', default='gpt-4', help='The model to use. (default: gpt-4)')
     parser.add_argument('--temperature', type=float, default=0.7, help='The temperature setting for the model. (default: 0.7)')
     parser.add_argument('--edit', metavar='FILENAME', nargs='+', help='Edit a file or files with the given filename(s).')
@@ -89,12 +89,6 @@ def main():
             file_description = f"the above file, {args.edit[0]},"
         prompt = f"{files_contents_str}\nI wish to change {file_description} as described here:\n{prompt}"
 
-    if not args.no_prompt_prefix:
-        script_dir = os.path.dirname(os.path.realpath(__file__))
-        with open(os.path.join(script_dir, 'prompt_prefix.txt'), 'r') as f:
-            prompt_prefix = f.read().strip()
-        prompt = prompt_prefix + prompt
-
     if not prompt:
         return
 
@@ -103,9 +97,19 @@ def main():
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}",
     }
+
+    messages = []
+
+    if not args.no_prompt_prefix:
+        script_dir = os.path.dirname(os.path.realpath(__file__))
+        with open(os.path.join(script_dir, 'prompt_prefix.txt'), 'r') as f:
+            messages.append({"role": "system", "content": f.read().strip()})
+
+    messages.append({"role": "user", "content": prompt})
+
     data = {
         "model": args.model,
-        "messages": [{"role": "user", "content": prompt}],
+        "messages": messages,
         "temperature": args.temperature,
         "stream": True,
     }
