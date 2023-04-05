@@ -4,8 +4,6 @@ A command line program to interact with GPT models.
 
 ## Features
 
-- Interact with OpenAI API using different models and temperature settings.
-- Optionally add a prompt prefix to your text.
 - Edit existing files with the help of the GPT model by describing the changes in plain English.
 - Store the history of prompts and responses in a local SQLite database.
 
