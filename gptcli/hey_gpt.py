@@ -12,25 +12,8 @@ import tempfile
 import requests
 
 import gptcli.apply
+import gptcli.history
 import gptcli.logging
-
-def create_table(conn):
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS history (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            prompt TEXT NOT NULL,
-            response TEXT NOT NULL
-        )
-    ''')
-    conn.commit()
-
-def insert_history(conn, prompt, response):
-    cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO history (prompt, response) VALUES (?, ?)
-    ''', (prompt, response))
-    conn.commit()
 
 def stream_response(response):
     content = ''
@@ -78,6 +61,9 @@ def main():
     parser.add_argument('--temperature', type=float, default=0.7, help='The temperature setting for the model. (default: 0.7)')
     parser.add_argument('--edit', metavar='FILENAME', nargs='+', help='Edit a file or files with the given filename(s).')
     args = parser.parse_args()
+
+    conn = sqlite3.connect(str(db_path))
+    gptcli.history.create_table(conn)
 
     if args.prompt:
         prompt = ' '.join(args.prompt)
@@ -138,9 +124,7 @@ def main():
 
     db_path = pathlib.Path.home() / '.local/share/hey_gpt/history.db'
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(str(db_path))
-    create_table(conn)
-    insert_history(conn, prompt, response_text)
+    gptcli.history.insert(conn, prompt, response_text)
     conn.close()
 
     gptcli.apply.apply_changes(response_text)
