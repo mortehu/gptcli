@@ -62,6 +62,8 @@ def main():
     parser.add_argument('--edit', metavar='FILENAME', nargs='+', help='Edit a file or files with the given filename(s).')
     args = parser.parse_args()
 
+    db_path = pathlib.Path.home() / '.local/share/hey_gpt/history.db'
+    db_path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(str(db_path))
     gptcli.history.create_table(conn)
 
@@ -100,7 +102,7 @@ def main():
 
     messages = []
 
-    if not args.no_prompt_prefix:
+    if not args.no_system_prompt:
         script_dir = os.path.dirname(os.path.realpath(__file__))
         with open(os.path.join(script_dir, 'prompt_prefix.txt'), 'r') as f:
             messages.append({"role": "system", "content": f.read().strip()})
@@ -126,8 +128,6 @@ def main():
     if not response_text.endswith('\n'):
         sys.stdout.write('\n')
 
-    db_path = pathlib.Path.home() / '.local/share/hey_gpt/history.db'
-    db_path.parent.mkdir(parents=True, exist_ok=True)
     gptcli.history.insert(conn, prompt, response_text)
     conn.close()
 
