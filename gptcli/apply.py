@@ -68,3 +68,4 @@ def apply_changes(input_string):
         logging.info('Creating %s', filename)
         with open(filename, "w") as f:
             f.write("\n".join(content_lines))
+            f.write("\n")
