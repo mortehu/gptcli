@@ -10,9 +10,4 @@ import sys
 sys.stdout.write("hello")
 END_FILE
 
-When editing existing files, please output a line containing only "EDIT_FILE <FILENAME> FROM <TEXT>" before the update content. "<TEXT>" should be the contents of the last line that is equal in the
-original file and the updated file, limited to lines that are unique.  After the first chnaged line, include all lines until the end of file, then print "END_FILE".  Example:
-
-EDIT_FILE example.py FROM sys.stdout.write("hello")
-sys.stdout.write(", world\n")
-END_FILE
+Try to generate short files, and add comments describing what functions do so that you will understand what they do with minimal context.
