@@ -17,25 +17,28 @@ import gptcli.logging
 
 def stream_response(response):
     content = ''
-    for chunk in response.iter_content(chunk_size=None):
-        for data_element in chunk.split(b'\n\n'):
-            if not data_element.startswith(b'data: '):
-                continue
-            data_element = data_element[6:]
-            if data_element == b'[DONE]':
-                break
-            try:
-                json_chunk = json.loads(data_element)
-            except Exception:
-                print(f'Failed chunk: {data_element}', file=sys.stderr)
-                raise
-            try:
-                content_chunk = json_chunk['choices'][0]['delta']['content']
-            except KeyError:
-                continue
-            sys.stdout.write(content_chunk)
-            sys.stdout.flush()
-            content += content_chunk
+    try:
+        for chunk in response.iter_content(chunk_size=None):
+            for data_element in chunk.split(b'\n\n'):
+                if not data_element.startswith(b'data: '):
+                    continue
+                data_element = data_element[6:]
+                if data_element == b'[DONE]':
+                    break
+                try:
+                    json_chunk = json.loads(data_element)
+                except Exception:
+                    print(f'Failed chunk: {data_element}', file=sys.stderr)
+                    raise
+                try:
+                    content_chunk = json_chunk['choices'][0]['delta']['content']
+                except KeyError:
+                    continue
+                sys.stdout.write(content_chunk)
+                sys.stdout.flush()
+                content += content_chunk
+    except Exception:
+        mig.logging.exception('Response truncated due to error')
     return content
 
 def get_editor():
